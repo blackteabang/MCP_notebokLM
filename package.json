@@ -1,0 +1,16 @@
+{
+  "name": "notebooklm-web-proxy",
+  "version": "1.0.0",
+  "description": "A web proxy to access NotebookLM via nlm CLI commands locally.",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node --watch server.js"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.21.0",
+    "express-session": "^1.19.0",
+    "marked": "^14.1.2"
+  }
+}

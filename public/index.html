@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NotebookLM Web Assistant</title>
+    <!-- Use Marked.js to parse markdown responses into HTML -->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+</head>
+<body>
+    
+    <!-- AUTHENTICATION SCREEN -->
+    <div id="auth-screen" class="glass-container auth-wrapper">
+        <h1 class="gradient-text">AI Jung2</h1>
+        <p class="subtitle" style="margin-bottom: 24px;">안전한 데이터 조회를 위해 계정으로 로그인해 주세요.</p>
+
+        <form id="auth-form" class="auth-form">
+            <div id="auth-error" class="hidden auth-error"></div>
+            
+            <input type="text" id="auth-username" placeholder="아이디" required autocomplete="off">
+            <input type="password" id="auth-password" placeholder="비밀번호" required autocomplete="off">
+            
+            <button type="submit" id="login-btn" class="auth-btn">로그인</button>
+            <button type="button" id="register-btn" class="auth-btn secondary">회원가입 및 시작하기</button>
+        </form>
+    </div>
+
+    <!-- MAIN CHAT SCREEN (Hidden by default) -->
+    <div id="main-screen" class="glass-container main-wrapper hidden">
+        <header class="header">
+            <div class="header-content">
+                <div>
+                    <h1 class="gradient-text">사내 지식 챗봇</h1>
+                    <p class="subtitle">규정, 가이드, 사내 문서 등 어떤 내용이든 부담 없이 물어보세요</p>
+                </div>
+                <!-- Logout Button -->
+                <button id="logout-btn" class="logout-btn">로그아웃 <span id="current-user"></span></button>
+            </div>
+        </header>
+
+        <main class="chat-container">
+            <div id="chat-messages" class="messages-area">
+                <!-- Chat messages will be injected here -->
+                <div class="message system-msg">
+                    <div class="avatar">🤖</div>
+                    <div class="msg-content">안녕하세요, <strong id="welcome-user"></strong>님! 저는 사내 데이터를 모두 알고 있는 지식 비서입니다. 무엇을 도와드릴까요?</div>
+                </div>
+            </div>
+            
+            <div class="typing-indicator hidden" id="typing-indicator">
+                <div class="dot"></div>
+                <div class="dot"></div>
+                <div class="dot"></div>
+            </div>
+        </main>
+
+        <footer class="input-area glass-container">
+            <form id="chat-form">
+                <input type="text" id="user-input" placeholder="질문을 입력하세요..." autocomplete="off" required>
+                <button type="submit" id="send-btn">전송</button>
+            </form>
+        </footer>
+    </div>
+    
+    <script src="app.js"></script>
+</body>
+</html>
