@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel - NotebookLM</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .admin-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            color: var(--text-main);
+        }
+        .admin-table th, .admin-table td {
+            text-align: left;
+            padding: 12px;
+            border-bottom: 1px solid var(--border-color);
+        }
+        .status-badge {
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        .status-pending { background: #f59e0b; color: white; }
+        .status-approved { background: #10b981; color: white; }
+        
+        .action-btn {
+            padding: 6px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            border: none;
+            margin-right: 8px;
+            font-size: 13px;
+            transition: opacity 0.2s;
+        }
+        .action-btn:hover { opacity: 0.8; }
+        .approve-btn { background: #10b981; color: white; }
+        .reject-btn { background: #ef4444; color: white; }
+        
+        .loading { text-align: center; padding: 20px; }
+        .access-denied { text-align: center; padding: 40px; color: #ef4444; }
+    </style>
+</head>
+<body class="admin-body">
+    <div id="admin-container" class="glass-container main-wrapper" style="max-width: 900px; height: 80vh; margin: 20px; padding: 30px;">
+        <header class="header" style="border: none; padding: 0 0 20px 0;">
+            <div class="header-content">
+                <div>
+                    <h1 class="gradient-text">사용자 승인 관리</h1>
+                    <p class="subtitle">새로 가입한 사용자를 승인하거나 거절할 수 있습니다.</p>
+                </div>
+                <button onclick="location.href='/'" class="logout-btn">메인으로</button>
+            </div>
+        </header>
+
+        <div id="content-area" style="overflow-y: auto; flex: 1;">
+            <div id="loader" class="loading">사용자 목록을 불러오는 중...</div>
+            <table id="user-table" class="admin-table hidden">
+                <thead>
+                    <tr>
+                        <th>아이디</th>
+                        <th>역할</th>
+                        <th>상태</th>
+                        <th>동작</th>
+                    </tr>
+                </thead>
+                <tbody id="user-list">
+                    <!-- Users will be injected here -->
+                </tbody>
+            </table>
+            <div id="denied-msg" class="access-denied hidden">
+                <h2>🚫 접근 권한 없음</h2>
+                <p>관리자 계정으로 로그인한 경우에만 접근 가능합니다.</p>
+            </div>
+        </div>
+    </div>
+
+    <script src="admin.js"></script>
+</body>
+</html>

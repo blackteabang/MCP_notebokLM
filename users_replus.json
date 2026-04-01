@@ -1,0 +1,16 @@
+[
+  {
+    "id": "admin-id-001",
+    "username": "blacktea",
+    "passwordHash": "6087ef7a664ab9392c562270eaa3de5dd7acc27ecb276fc61b8a4caab41f2eb3",
+    "role": "admin",
+    "approved": true
+  },
+  {
+    "id": "1774921747048",
+    "username": "1803",
+    "passwordHash": "03ac674216f3e15c761ee1a5e255f067953623c8b388b4459e13f978d7c846f4",
+    "role": "user",
+    "approved": true
+  }
+]

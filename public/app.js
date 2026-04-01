@@ -21,22 +21,52 @@ document.addEventListener("DOMContentLoaded", () => {
     // Options for marked.js
     marked.setOptions({ breaks: true, gfm: true, headerIds: false });
 
-    // 1. Check Session on Load
-    checkSession();
+    // 1. Fetch Config and Check Session
+    initApp();
 
-    // --- Authentication Logic ---
+    async function initApp() {
+        try {
+            // Fetch service configuration
+            const configRes = await fetch('/api/config');
+            const config = await configRes.json();
+            
+            // Update UI with service name
+            const name = config.serviceName || "NotebookLM Assistant";
+            const subtitle = config.serviceSubtitle || "규정, 가이드, 사내 문서 등 어떤 내용이든 부담 없이 물어보세요";
+            document.title = name;
+            document.getElementById("auth-service-name").textContent = name;
+            document.getElementById("main-service-name").textContent = name;
+            document.getElementById("main-subtitle").textContent = subtitle;
+            document.getElementById("welcome-message").textContent = `안녕하세요. ${name} 입니다. 무엇이 궁금하세요?`;
+            
+            if (!config.authRequired) {
+                logoutBtn.classList.add("hidden");
+                document.getElementById("auth-subtitle").textContent = subtitle;
+            }
 
-    async function checkSession() {
+            // Check if already logged in
+            await checkSession(config.authRequired);
+        } catch (e) {
+            console.error("Config fetch error", e);
+            checkSession(true);
+        }
+    }
+
+    async function checkSession(authRequired) {
         try {
             const res = await fetch('/api/me');
             const data = await res.json();
             if (data.loggedIn) {
                 showMainScreen(data.username);
-            } else {
+            } else if (authRequired) {
                 showAuthScreen();
+            } else {
+                // If not logged in but auth not required (shouldn't happen with updated /api/me)
+                showMainScreen("Guest");
             }
         } catch (e) {
-            showAuthScreen();
+            if (authRequired) showAuthScreen();
+            else showMainScreen("Guest");
         }
     }
 
@@ -51,7 +81,9 @@ document.addEventListener("DOMContentLoaded", () => {
         authScreen.classList.add("hidden");
         mainScreen.classList.remove("hidden");
         currentUserSpan.textContent = `(${username})`;
-        welcomeUserSpan.textContent = username;
+        if (welcomeUserSpan) {
+            welcomeUserSpan.textContent = username;
+        }
     }
 
     function displayError(msg) {
@@ -111,7 +143,9 @@ document.addEventListener("DOMContentLoaded", () => {
             const data = await res.json();
             
             if (res.ok) {
-                showMainScreen(data.username);
+                // Show success message and reset form instead of auto-login
+                alert(data.message || '가입 신청이 완료되었습니다. 관리자 승인 후 로그인 가능합니다.');
+                authForm.reset();
             } else {
                 displayError(data.error || '회원가입에 실패했습니다.');
             }
@@ -128,12 +162,7 @@ document.addEventListener("DOMContentLoaded", () => {
         try {
             await fetch('/api/logout', { method: 'POST' });
             showAuthScreen();
-            chatMessages.innerHTML = `
-                <div class="message system-msg">
-                    <div class="avatar">🤖</div>
-                    <div class="msg-content">안녕하세요, <strong id="welcome-user"></strong>님! 저는 사내 데이터를 모두 알고 있는 지식 비서입니다. 무엇을 도와드릴까요?</div>
-                </div>
-            `;
+            location.reload(); // Hard reload to clear everything
         } catch (e) {
             console.error(e);
         }
@@ -162,7 +191,12 @@ document.addEventListener("DOMContentLoaded", () => {
             showTyping(false);
 
             if (response.ok && data.result) {
-                const htmlContent = marked.parse(data.result);
+                // Remove ** markers and [1], [2] style citations as requested by user
+                const cleanResult = data.result
+                    .replace(/\*\*/g, '')
+                    .replace(/\s*\[\d+(?:,\s*\d+)*\]/g, '');
+                
+                const htmlContent = marked.parse(cleanResult);
                 addHTMLMessage(htmlContent, 'system-msg');
             } else if (response.status === 401) {
                 checkSession(); // Re-auth if session expired

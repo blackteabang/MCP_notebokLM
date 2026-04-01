@@ -1,0 +1,9 @@
+tunnel: 44a287ae-8b33-4fec-ad0d-89d69d676daa
+credentials-file: C:\Users\hyban.DESKTOP-T81OV0G\.cloudflared\44a287ae-8b33-4fec-ad0d-89d69d676daa.json
+
+ingress:
+  - hostname: note.jashin.org
+    service: http://localhost:3000
+  - hostname: replusqna.jashin.org
+    service: http://localhost:3001
+  - service: http_status:404
