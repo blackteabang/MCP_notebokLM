@@ -14,10 +14,10 @@
     "approved": true
   },
   {
-    "id": "1775010809239",
-    "username": "admin",
-    "passwordHash": "1267057f1ec769c39b88211c4c666382a7dc9fe22f765a66a37918a6a6ab581a",
+    "id": "1775088046364",
+    "username": "gugaya",
+    "passwordHash": "0ffe1abd1a08215353c233d6e009613e95eec4253832a761af28ff37ac5a150c",
     "role": "user",
-    "approved": false
+    "approved": true
   }
 ]

@@ -11,6 +11,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             const data = await res.json();
             if (data.loggedIn && data.role === "admin") {
                 loadUsers();
+                loadStats();
             } else {
                 showDenied();
             }
@@ -114,5 +115,47 @@ document.addEventListener("DOMContentLoaded", async () => {
         }
     };
 
+    // 4. Load Query Stats
+    async function loadStats() {
+        const statsSection = document.getElementById("stats-section");
+        const statsList = document.getElementById("stats-list");
+        if (!statsSection || !statsList) return;
+
+        try {
+            const res = await fetch("/api/admin/stats");
+            if (!res.ok) return;
+            const stats = await res.json();
+            renderStats(stats, statsList);
+            statsSection.classList.remove("hidden");
+        } catch (e) {
+            console.error("Stats load error:", e);
+        }
+    }
+
+    function renderStats(stats, statsList) {
+        statsList.innerHTML = "";
+        if (stats.length === 0) {
+            statsList.innerHTML = "<tr><td colspan='4' style='text-align:center;'>질문 내역이 아직 없습니다.</td></tr>";
+            return;
+        }
+
+        stats.forEach(q => {
+            const tr = document.createElement("tr");
+            const date = new Date(q.timestamp).toLocaleString();
+            
+            tr.innerHTML = `
+                <td class="time-col">${date}</td>
+                <td style="font-weight:500;">${q.username}</td>
+                <td><span class="alias-badge">${q.alias}</span></td>
+                <td style="word-break: break-all;">${q.prompt}</td>
+            `;
+            statsList.appendChild(tr);
+        });
+    }
+
+    const refreshBtn = document.getElementById("refresh-stats");
+    if (refreshBtn) refreshBtn.addEventListener("click", loadStats);
+
+    // Initial load
     checkAdmin();
 });

@@ -16,14 +16,24 @@ const SERVICE_NAME = process.env.SERVICE_NAME || 'NotebookLM Web Proxy';
 const SERVICE_SUBTITLE = process.env.SERVICE_SUBTITLE || '규정, 가이드, 사내 문서 등 어떤 내용이든 부담 없이 물어보세요';
 const AUTH_REQUIRED = process.env.AUTH_REQUIRED !== 'false'; // Default to true
 const USERS_FILE = path.join(__dirname, process.env.USERS_FILENAME || 'users.json');
+const QUERIES_FILE = path.join(__dirname, 'queries.json');
 
-// Ensure users.json exists
+// Ensure files exist
 if (!fs.existsSync(USERS_FILE)) {
     fs.writeFileSync(USERS_FILE, JSON.stringify([]));
+}
+if (!fs.existsSync(QUERIES_FILE)) {
+    fs.writeFileSync(QUERIES_FILE, JSON.stringify([]));
 }
 
 app.use(cors());
 app.use(express.json());
+
+// Redirect /admin to admin.html for convenience
+app.get('/admin', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'admin.html'));
+});
+
 app.use(express.static(path.join(__dirname, 'public')));
 
 // Session Setup
@@ -55,6 +65,23 @@ function saveUsers(users) {
 // Helper to hash password
 function hashPassword(password) {
     return crypto.createHash('sha256').update(password).digest('hex');
+}
+
+// Helper to save query
+function saveQuery(username, alias, prompt, result) {
+    try {
+        const queries = JSON.parse(fs.readFileSync(QUERIES_FILE, 'utf8'));
+        queries.push({
+            timestamp: new Date().toISOString(),
+            username,
+            alias,
+            prompt,
+            resultPrefix: result ? result.substring(0, 100) + '...' : ''
+        });
+        fs.writeFileSync(QUERIES_FILE, JSON.stringify(queries, null, 2));
+    } catch (e) {
+        console.error("Error saving query log:", e);
+    }
 }
 
 // --- Config & Auth Routes ---
@@ -154,6 +181,16 @@ app.get('/api/admin/users', requireAdmin, (req, res) => {
     res.json(sanitized);
 });
 
+app.get('/api/admin/stats', requireAdmin, (req, res) => {
+    try {
+        const queries = JSON.parse(fs.readFileSync(QUERIES_FILE, 'utf8'));
+        // Return last 200 queries
+        res.json(queries.slice(-200).reverse());
+    } catch (e) {
+        res.status(500).json({ error: 'Failed to read stats' });
+    }
+});
+
 app.post('/api/admin/approve', requireAdmin, (req, res) => {
     const { userId } = req.body;
     console.log(`[ADMIN] Approving user ID: ${userId}`);
@@ -235,6 +272,9 @@ app.post('/api/query', requireAuth, (req, res) => {
             console.error("[JSON Parse Error]", e);
             // If parsing fails, just return the raw text
         }
+        
+        // Log the query
+        saveQuery(req.session.username || 'Guest', NOTEBOOK_ALIAS, userPrompt, finalResult);
         
         res.json({ result: finalResult });
     });
