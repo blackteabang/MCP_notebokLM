@@ -1,71 +1,77 @@
-# 🚀 NotebookLM Web Proxy 가이드
+# 🤖 Remann AI: Multi-Instance NotebookLM Proxy
 
-본 프로젝트는 로컬에서 실행되는 `nlm` CLI(NotebookLM MCP)를 웹 브라우저를 통해 어디서나 접근할 수 있도록 도와주는 보안 웹 프록시 서비스입니다.
-
----
-
-## 📋 1. 사전 준비 사항
-
-서비스를 실행하기 전 다음 도구들이 설치되어 있어야 합니다:
-- **Node.js:** 서버 구동을 위한 런타임 ([다운로드](https://nodejs.org/))
-- **nlm CLI:** NotebookLM과 통신하기 위한 도구 (Python 기반)
-  - **GitHub:** [jacob-bd/notebooklm-mcp-cli](https://github.com/jacob-bd/notebooklm-mcp-cli)
-  - **설치:** `pip install notebooklm-mcp-cli` 또는 `uv tool install notebooklm-mcp-cli`
-- **cloudflared:** 외부에서 접속 가능한 퍼블릭 URL 생성을 위한 도구 ([설치 안내](https://developers.cloudflare.com/cloudflare-one/connections/connect-apps/install-and-setup/installation/))
+본 프로젝트는 구글 NotebookLM을 기반으로 사내 지식 관리(ESG) 및 자외선 순환 안내(Replus)를 제공하는 웹 프록시 서비스입니다. 하나의 서버에서 여러 개의 독립적인 AI 인스턴스를 운영하며, 클라우드플레어 터널을 통해 안전하게 외부로 서비스합니다.
 
 ---
 
-## 🏃 2. 서비스 실행 방법 (3단계)
+## 🛠️ 주요 기능
 
-외부에서 접속하기 위해서는 **백엔드 서버**와 **퍼블릭 터널** 두 가지가 모두 실행 중이어야 합니다.
+- **다중 인스턴스 운영:** 서로 다른 노트북 소스를 사용하는 독립적인 AI 서비스 동시 구동
+- **인증 시스템:** 
+    - **리맨 지식 정보 AI:** 승인 기반 회원제 운영 (보안 강화)
+    - **리플러스 자원순환 AI:** 로그인 없는 공개 모드 (접근성 강화)
+- **통계 및 모니터링:** 관리자용 대시보드(`/admin`)를 통한 실시간 질문 로그 및 통계 확인
+- **자동화 관리:** PM2를 활용한 서비스 상시 가동 및 로그 관리
+- **보안 터널:** Cloudflare Tunnel을 통한 포트 개방 없는 서브도메인 연결
 
-### 0단계: NotebookLM 계정 로그인 (최초 1회)
-CLI 도구가 사용자의 NotebookLM 데이터에 접근할 수 있도록 구글 계정 로그인이 필요합니다.
-```powershell
-nlm login
+---
+
+## 🚀 시작하기
+
+### 1. 사전 요구 사항
+- **Node.js:** v16 이상
+- **Python:** NotebookLM CLI(`nlm`) 구동용
+- **cloudflared:** 터널 서비스를 위한 클라이언트
+
+### 2. 설치
+```bash
+# 의존성 설치
+npm install
+
+# nlm CLI 설치 (Python 환경)
+pip install notebooklm-mcp-cli
 ```
-- 명령어를 실행하면 브라우저 창이 열리며, 본인의 Google 계정으로 로그인하여 인증을 완료합니다.
 
-### 1단계: 백엔드 서버 실행
-프로젝트 루트 디렉토리에서 터미널을 열고 다음 명령어를 실행합니다.
-```powershell
-npm start
+### 3. 설정 파일
+- **`ecosystem.config.js`**: 각 서비스의 포트, 별칭, 서비스명, 인증 여부를 설정합니다.
+- **`config.yml`**: 클라우드플레어 터널의 도메인 라우팅 규칙을 정의합니다.
+
+### 4. 실행 및 중지
+PM2를 사용하여 모든 서비스를 한 번에 관리합니다.
+```bash
+# 전체 서비스 실행 (ESG, Replus, Tunnel)
+pm2 start ecosystem.config.js
+
+# 상태 확인
+pm2 status
+
+# 서비스 중지
+pm2 delete all
+
+# 설정 저장 (부팅 시 자동 시작용)
+pm2 save
 ```
-- 성공 시: `🚀 NotebookLM Web Proxy is running on port 3000` 메시지가 출력됩니다.
-- 로컬 주소: `http://localhost:3000`
-
-### 2단계: 외부 접속용 터널 개방 (Cloudflare)
-새 터미널 창을 열고 다음 명령어를 실행하여 임시 퍼블릭 URL을 생성합니다.
-```powershell
-cloudflared tunnel --url http://localhost:3000
-```
-- 터미널 출력 결과 중 `https://...trycloudflare.com` 형태의 링크를 복사하여 브라우저에서 접속합니다.
-- **주의:** 터미널을 종료하면 주소도 함께 사라지며, 다시 켤 때마다 주소가 변경됩니다.
 
 ---
 
-## 🔐 3. 보안 및 인증 안내
+## 📊 관리자 기능 (`/admin`)
 
-본 서비스는 외부 노출 시 보안을 위해 사용자 인증이 적용되어 있습니다.
-
-1.  **계정 생성:** 처음 접속 시 'Register' 메뉴에서 아이디와 비밀번호를 생성합니다.
-2.  **데이터 저장:** 계정 정보는 프로젝트 폴더 내 `users.json`에 암호화(SHA-256)되어 저장됩니다.
-3.  **접속 제한:** 로그인하지 않은 사용자는 `nlm` 쿼리(질의응답) 기능을 사용할 수 없습니다.
+- **사용자 관리:** 신규 가입자의 '승인' 또는 '거절' 처리
+- **활동 통계:** 사용자들이 AI에게 던진 질문 내역(`queries.json`)을 실시간으로 확인 및 분석
+- **접근 방법:** `https://note.jashin.org/admin` (관리자 계정 로그인 필수)
 
 ---
 
-## 💡 4. 심화: 자동 실행 설정하기
+## 📂 프로젝트 구조
 
-매번 명령어를 입력하는 것이 번거롭다면 다음 방법을 고려해 보세요.
-
-### 터널을 Windows 서비스로 등록 (고정 주소)
-1.  [Cloudflare Dashboard](https://dash.cloudflare.com/)에 로그인하여 고정된 'Named Tunnel'을 생성합니다.
-2.  `cloudflared service install <TOKEN>` 명령을 통해 컴퓨터 부팅 시 자동으로 터미널이 실행되도록 설정할 수 있습니다.
+- `server.js`: 핵심 Node.js 백엔드 (Express)
+- `public/`: 프론트엔드 HTML/JS/CSS 소스
+- `docs/`: 도움말 및 매뉴얼 파일 저장소
+- `queries.json`: 사용자 질문 로그 데이터베이스
+- `users_*.json`: 서비스별 사용자 정보 데이터베이스
 
 ---
 
-## 🛠️ 5. 트러블슈팅
-
-- **"nlm" 명령어를 찾을 수 없음:** `server.js` 파일 내 `NLM_PATH`가 실제 설치 경로와 일치하는지 확인하십시오.
-- **포트 3000 충돌:** 이미 다른 서비스가 3000 포트를 사용 중이라면 `PORT=선택포트 npm start`로 변경하여 실행하세요.
-- **로그 확인:** 실행 중 발생하는 오류는 터미널 로그 또는 `cloudflare.log`를 통해 확인할 수 있습니다.
+## 📝 관리 문의
+- **관리자:** blacktea (bang7749!)
+- **기술 지원:** Antigravity AI
