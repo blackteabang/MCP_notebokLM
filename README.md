@@ -73,5 +73,5 @@ pm2 save
 ---
 
 ## 📝 관리 문의
-- **관리자:** blacktea (bang7749!)
+- **관리자:** 관리자 전용 계정 사용
 - **기술 지원:** Antigravity AI
