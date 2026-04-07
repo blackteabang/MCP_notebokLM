@@ -1,0 +1,35 @@
+﻿                                            
+ Usage: nlm query notebook [OPTIONS]        
+ NOTEBOOK QUESTION                          
+                                            
+ Chat with notebook sources.                
+                                            
++- Arguments ------------------------------+
+| *    notebook      TEXT  Notebook ID or  |
+|                          alias           |
+|                          [required]      |
+| *    question      TEXT  Question to ask |
+|                          [required]      |
++------------------------------------------+
++- Options --------------------------------+
+| --conversa…  -c      TEXT   Conversation |
+|                             ID for       |
+|                             follow-up    |
+|                             questions    |
+| --source-i…  -s      TEXT   Comma-separ… |
+|                             source IDs   |
+|                             to query     |
+|                             (default:    |
+|                             all)         |
+| --profile    -p      TEXT   Profile to   |
+|                             use          |
+| --timeout    -t      FLOAT  Query        |
+|                             timeout in   |
+|                             seconds      |
+|                             (default:    |
+|                             120)         |
+| --help                      Show this    |
+|                             message and  |
+|                             exit.        |
++------------------------------------------+
+

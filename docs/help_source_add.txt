@@ -1,0 +1,52 @@
+﻿                                            
+ Usage: nlm source add [OPTIONS]            
+ NOTEBOOK_ID                                
+                                            
+ Add a source to a notebook.                
+                                            
+ Examples:                                  
+ nlm source add <notebook-id> --url         
+ https://example.com                        
+ nlm source add <notebook-id> --url         
+ https://a.com --url https://b.com          
+ nlm source add <notebook-id> --url         
+ https://example.com --wait                 
+ nlm source add <notebook-id> --file        
+ document.pdf --wait                        
+ nlm source add <notebook-id> --youtube     
+ https://youtu.be/a --youtube               
+ https://youtu.be/b                         
+                                            
++- Arguments ------------------------------+
+| *    notebook_id      TEXT  Notebook ID  |
+|                             [required]   |
++------------------------------------------+
++- Options --------------------------------+
+| --url      -u      TEXT  URL to add      |
+|                          (repeatable for |
+|                          bulk)           |
+| --text     -t      TEXT  Text content to |
+|                          add             |
+| --drive    -d      TEXT  Google Drive    |
+|                          document ID     |
+| --youtube  -y      TEXT  YouTube URL     |
+|                          (repeatable for |
+|                          bulk)           |
+| --file     -f      TEXT  Local file to   |
+|                          upload (PDF,    |
+|                          etc.)           |
+| --title            TEXT  Title for the   |
+|                          source          |
+| --type             TEXT  Drive doc type: |
+|                          doc, slides,    |
+|                          sheets, pdf     |
+|                          [default: doc]  |
+| --wait     -w            Wait for source |
+|                          processing to   |
+|                          complete        |
+| --profile  -p      TEXT  Profile to use  |
+| --help                   Show this       |
+|                          message and     |
+|                          exit.           |
++------------------------------------------+
+

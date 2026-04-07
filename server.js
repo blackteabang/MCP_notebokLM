@@ -14,7 +14,7 @@ const NLM_PATH = 'C:\\Users\\hyban.DESKTOP-T81OV0G\\AppData\\Roaming\\Python\\Py
 const NOTEBOOK_ALIAS = process.env.NOTEBOOK_ALIAS || 'notee';
 const SERVICE_NAME = process.env.SERVICE_NAME || 'NotebookLM Web Proxy';
 const SERVICE_SUBTITLE = process.env.SERVICE_SUBTITLE || '규정, 가이드, 사내 문서 등 어떤 내용이든 부담 없이 물어보세요';
-const AUTH_REQUIRED = process.env.AUTH_REQUIRED !== 'false'; // Default to true
+const AUTH_REQUIRED = false; // Permanently disabled as per user request
 const USERS_FILE = path.join(__dirname, process.env.USERS_FILENAME || 'users.json');
 const QUERIES_FILE = path.join(__dirname, 'queries.json');
 
@@ -32,6 +32,11 @@ app.use(express.json());
 // Redirect /admin to admin.html for convenience
 app.get('/admin', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'admin.html'));
+});
+
+// History Page Route
+app.get('/history', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'history.html'));
 });
 
 app.use(express.static(path.join(__dirname, 'public')));
@@ -144,31 +149,41 @@ app.post('/api/logout', (req, res) => {
 });
 
 app.get('/api/me', (req, res) => {
-    if (req.session.userId) {
+    if (req.session.username) {
         return res.json({ 
             loggedIn: true, 
-            username: req.session.username,
-            role: req.session.role 
+            username: req.session.username, 
+            role: req.session.role || 'user' 
         });
-    }
-    
-    // If auth is not required, provide a guest session automatically
-    if (!AUTH_REQUIRED) {
+    } else {
         return res.json({ 
-            loggedIn: true, 
-            username: 'Guest', 
-            role: 'user' 
+            loggedIn: false
         });
     }
-    
-    return res.json({ loggedIn: false });
 });
 
-// Middleware to protect admin routes
-function requireAdmin(req, res, next) {
-    if (!req.session.userId || req.session.role !== 'admin') {
-        return res.status(403).json({ error: '관리자 권한이 필요합니다.' });
+app.post('/api/set-nickname', (req, res) => {
+    const { nickname } = req.body;
+    if (!nickname) return res.status(400).json({ error: 'Nickname is required' });
+
+    req.session.username = nickname;
+    req.session.role = 'user';
+    res.json({ message: 'Nickname set successfully', username: nickname });
+});
+
+// Public History API
+app.get('/api/history', (req, res) => {
+    try {
+        const queries = JSON.parse(fs.readFileSync(QUERIES_FILE, 'utf8'));
+        // Return last 200 queries
+        res.json(queries.slice(-200).reverse());
+    } catch (e) {
+        res.status(500).json({ error: 'Failed to read history' });
     }
+});
+
+// Middleware to protect admin routes (Disabled)
+function requireAdmin(req, res, next) {
     next();
 }
 
@@ -220,13 +235,8 @@ app.post('/api/admin/reject', requireAdmin, (req, res) => {
     }
 });
 
-// Middleware to protect routes
+// Middleware to protect routes (Disabled)
 function requireAuth(req, res, next) {
-    if (!AUTH_REQUIRED) return next();
-    
-    if (!req.session.userId) {
-        return res.status(401).json({ error: 'Unauthorized. Please log in.' });
-    }
     next();
 }
 

@@ -1,0 +1,21 @@
+﻿                                            
+ Usage: nlm notebook [OPTIONS] COMMAND      
+ [ARGS]...                                  
+                                            
+ Manage notebooks                           
+                                            
++- Options --------------------------------+
+| --help          Show this message and    |
+|                 exit.                    |
++------------------------------------------+
++- Commands -------------------------------+
+| list      List all notebooks.            |
+| create    Create a new notebook.         |
+| get       Get notebook details.          |
+| describe  Get AI-generated notebook      |
+|           summary with suggested topics. |
+| rename    Rename a notebook.             |
+| delete    Delete a notebook permanently. |
+| query     Chat with notebook sources.    |
++------------------------------------------+
+

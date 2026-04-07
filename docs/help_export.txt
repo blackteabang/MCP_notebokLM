@@ -1,0 +1,19 @@
+﻿                                            
+ Usage: nlm export [OPTIONS] COMMAND        
+ [ARGS]...                                  
+                                            
+ Export artifacts to Google Docs/Sheets     
+                                            
++- Options --------------------------------+
+| --help          Show this message and    |
+|                 exit.                    |
++------------------------------------------+
++- Commands -------------------------------+
+| artifact   Export an artifact to Google  |
+|            Docs or Sheets.               |
+| to-docs    Export a Report artifact to   |
+|            Google Docs.                  |
+| to-sheets  Export a Data Table artifact  |
+|            to Google Sheets.             |
++------------------------------------------+
+

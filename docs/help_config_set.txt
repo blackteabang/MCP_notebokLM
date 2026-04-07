@@ -1,0 +1,18 @@
+﻿                                            
+ Usage: nlm config set [OPTIONS] KEY VALUE  
+                                            
+ Set a configuration value.                 
+                                            
++- Arguments ------------------------------+
+| *    key        TEXT  Configuration key  |
+|                       (e.g.              |
+|                       output.format)     |
+|                       [required]         |
+| *    value      TEXT  Value to set       |
+|                       [required]         |
++------------------------------------------+
++- Options --------------------------------+
+| --help          Show this message and    |
+|                 exit.                    |
++------------------------------------------+
+

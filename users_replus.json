@@ -2,7 +2,7 @@
   {
     "id": "admin-id-001",
     "username": "blacktea",
-    "passwordHash": "6087ef7a664ab9392c562270eaa3de5dd7acc27ecb276fc61b8a4caab41f2eb3",
+    "passwordHash": "8b76f4d15773e8b83bf2f33595f7ec5b893771c01b37fa70071a24479a298fdd",
     "role": "admin",
     "approved": true
   },

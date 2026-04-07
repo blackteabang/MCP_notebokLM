@@ -1,0 +1,14 @@
+﻿                                            
+ Usage: nlm query [OPTIONS] COMMAND         
+ [ARGS]...                                  
+                                            
+ Chat with notebook sources                 
+                                            
++- Options --------------------------------+
+| --help          Show this message and    |
+|                 exit.                    |
++------------------------------------------+
++- Commands -------------------------------+
+| notebook  Chat with notebook sources.    |
++------------------------------------------+
+

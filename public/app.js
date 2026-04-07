@@ -1,16 +1,6 @@
 document.addEventListener("DOMContentLoaded", () => {
-    // Auth Elements
-    const authScreen = document.getElementById("auth-screen");
+    // Auth Elements (REMOVED)
     const mainScreen = document.getElementById("main-screen");
-    const authForm = document.getElementById("auth-form");
-    const authError = document.getElementById("auth-error");
-    const authUsernameInput = document.getElementById("auth-username");
-    const authPasswordInput = document.getElementById("auth-password");
-    const loginBtn = document.getElementById("login-btn");
-    const registerBtn = document.getElementById("register-btn");
-    const logoutBtn = document.getElementById("logout-btn");
-    const currentUserSpan = document.getElementById("current-user");
-    const welcomeUserSpan = document.getElementById("welcome-user");
 
     // Chat Elements
     const chatForm = document.getElementById("chat-form");
@@ -18,14 +8,23 @@ document.addEventListener("DOMContentLoaded", () => {
     const chatMessages = document.getElementById("chat-messages");
     const typingIndicator = document.getElementById("typing-indicator");
 
+    // Nickname Elements
+    const nicknameOverlay = document.getElementById("nickname-overlay");
+    const nicknameForm = document.getElementById("nickname-form");
+    const nicknameInput = document.getElementById("nickname-input");
+
     // Options for marked.js
     marked.setOptions({ breaks: true, gfm: true, headerIds: false });
 
-    // 1. Fetch Config and Check Session
+    // 1. Fetch Config and Initialize
     initApp();
 
     async function initApp() {
         try {
+            // Check session first
+            const meRes = await fetch('/api/me');
+            const meData = await meRes.json();
+
             // Fetch service configuration
             const configRes = await fetch('/api/config');
             const config = await configRes.json();
@@ -34,137 +33,53 @@ document.addEventListener("DOMContentLoaded", () => {
             const name = config.serviceName || "NotebookLM Assistant";
             const subtitle = config.serviceSubtitle || "규정, 가이드, 사내 문서 등 어떤 내용이든 부담 없이 물어보세요";
             document.title = name;
-            document.getElementById("auth-service-name").textContent = name;
             document.getElementById("main-service-name").textContent = name;
             document.getElementById("main-subtitle").textContent = subtitle;
-            document.getElementById("welcome-message").textContent = `안녕하세요. ${name} 입니다. 무엇이 궁금하세요?`;
-            
-            if (!config.authRequired) {
-                logoutBtn.classList.add("hidden");
-                document.getElementById("auth-subtitle").textContent = subtitle;
-            }
 
-            // Check if already logged in
-            await checkSession(config.authRequired);
+            if (meData.loggedIn && meData.username) {
+                showChat(meData.username, name);
+            } else {
+                showNicknameModal();
+            }
         } catch (e) {
             console.error("Config fetch error", e);
-            checkSession(true);
+            showNicknameModal();
         }
     }
 
-    async function checkSession(authRequired) {
-        try {
-            const res = await fetch('/api/me');
-            const data = await res.json();
-            if (data.loggedIn) {
-                showMainScreen(data.username);
-            } else if (authRequired) {
-                showAuthScreen();
-            } else {
-                // If not logged in but auth not required (shouldn't happen with updated /api/me)
-                showMainScreen("Guest");
-            }
-        } catch (e) {
-            if (authRequired) showAuthScreen();
-            else showMainScreen("Guest");
-        }
-    }
-
-    function showAuthScreen() {
+    function showNicknameModal() {
+        nicknameOverlay.classList.remove("hidden");
         mainScreen.classList.add("hidden");
-        authScreen.classList.remove("hidden");
-        authError.classList.add("hidden");
-        authForm.reset();
     }
 
-    function showMainScreen(username) {
-        authScreen.classList.add("hidden");
+    function showChat(nickname, serviceName) {
+        nicknameOverlay.classList.add("hidden");
         mainScreen.classList.remove("hidden");
-        currentUserSpan.textContent = `(${username})`;
-        if (welcomeUserSpan) {
-            welcomeUserSpan.textContent = username;
-        }
+        document.getElementById("welcome-message").textContent = `안녕하세요, ${nickname}님! ${serviceName} 입니다. 무엇이 궁금하세요?`;
     }
 
-    function displayError(msg) {
-        authError.textContent = msg;
-        authError.classList.remove("hidden");
-    }
-
-    // Login logic
-    authForm.addEventListener("submit", async (e) => {
+    nicknameForm.addEventListener("submit", async (e) => {
         e.preventDefault();
-        const username = authUsernameInput.value.trim();
-        const password = authPasswordInput.value.trim();
-        if (!username || !password) return;
-
-        loginBtn.disabled = true;
-        loginBtn.textContent = '로그인 중...';
+        const nickname = nicknameInput.value.trim();
+        if (!nickname) return;
 
         try {
-            const res = await fetch('/api/login', {
+            const res = await fetch('/api/set-nickname', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ username, password })
+                body: JSON.stringify({ nickname })
             });
-            const data = await res.json();
-            
+
             if (res.ok) {
-                showMainScreen(data.username);
+                const configRes = await fetch('/api/config');
+                const config = await configRes.json();
+                showChat(nickname, config.serviceName || "NotebookLM Assistant");
             } else {
-                displayError(data.error || '로그인에 실패했습니다.');
+                alert("닉네임을 설정하는 데 실패했습니다.");
             }
         } catch (e) {
-            displayError('네트워크 오류가 발생했습니다.');
-        } finally {
-            loginBtn.disabled = false;
-            loginBtn.textContent = '로그인';
-        }
-    });
-
-    // Register logic
-    registerBtn.addEventListener('click', async () => {
-        const username = authUsernameInput.value.trim();
-        const password = authPasswordInput.value.trim();
-        if (!username || !password) {
-            displayError("아이디와 비밀번호를 모두 입력해주세요.");
-            return;
-        }
-
-        registerBtn.disabled = true;
-        registerBtn.textContent = '가입 및 로그인 진행 중...';
-
-        try {
-            const res = await fetch('/api/register', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ username, password })
-            });
-            const data = await res.json();
-            
-            if (res.ok) {
-                // Show success message and reset form instead of auto-login
-                alert(data.message || '가입 신청이 완료되었습니다. 관리자 승인 후 로그인 가능합니다.');
-                authForm.reset();
-            } else {
-                displayError(data.error || '회원가입에 실패했습니다.');
-            }
-        } catch (e) {
-            displayError('네트워크 오류가 발생했습니다.');
-        } finally {
-            registerBtn.disabled = false;
-            registerBtn.textContent = '회원가입 및 시작하기';
-        }
-    });
-
-    // Logout logic
-    logoutBtn.addEventListener("click", async () => {
-        try {
-            await fetch('/api/logout', { method: 'POST' });
-            showAuthScreen();
-            location.reload(); // Hard reload to clear everything
-        } catch (e) {
-            console.error(e);
+            console.error("Nickname set error", e);
+            alert("서버 통신 중 오류가 발생했습니다.");
         }
     });
 

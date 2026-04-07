@@ -1,0 +1,18 @@
+﻿                                            
+ Usage: nlm alias [OPTIONS] COMMAND         
+ [ARGS]...                                  
+                                            
+ Manage ID aliases                          
+                                            
++- Options --------------------------------+
+| --help          Show this message and    |
+|                 exit.                    |
++------------------------------------------+
++- Commands -------------------------------+
+| set     Create or update an alias for an |
+|         ID.                              |
+| get     Get the value of an alias.       |
+| list    List all aliases.                |
+| delete  Delete an alias.                 |
++------------------------------------------+
+

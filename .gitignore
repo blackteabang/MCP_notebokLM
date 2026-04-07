@@ -5,5 +5,9 @@ users.json
 .DS_Store
 dist/
 build/
-help*.txt
-cloudflare.log
+queries.json
+users_*.json
+nlm_help*.txt
+login_output.txt
+notebooks*.txt
+tmp/

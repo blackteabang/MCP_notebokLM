@@ -1,0 +1,17 @@
+﻿                                            
+ Usage: nlm config [OPTIONS] COMMAND        
+ [ARGS]...                                  
+                                            
+ Manage configuration                       
+                                            
++- Options --------------------------------+
+| --help          Show this message and    |
+|                 exit.                    |
++------------------------------------------+
++- Commands -------------------------------+
+| show  Show current configuration.        |
+| get   Get a specific configuration       |
+|       value.                             |
+| set   Set a configuration value.         |
++------------------------------------------+
+

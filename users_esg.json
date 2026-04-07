@@ -2,7 +2,7 @@
   {
     "id": "admin-id-001",
     "username": "blacktea",
-    "passwordHash": "6087ef7a664ab9392c562270eaa3de5dd7acc27ecb276fc61b8a4caab41f2eb3",
+    "passwordHash": "8b76f4d15773e8b83bf2f33595f7ec5b893771c01b37fa70071a24479a298fdd",
     "role": "admin",
     "approved": true
   },
@@ -17,6 +17,20 @@
     "id": "1775088046364",
     "username": "gugaya",
     "passwordHash": "0ffe1abd1a08215353c233d6e009613e95eec4253832a761af28ff37ac5a150c",
+    "role": "user",
+    "approved": true
+  },
+  {
+    "id": "1775102597017",
+    "username": "koojaeok",
+    "passwordHash": "aa8e58f059c77c5c8b2c48298be131b607ae0a57796dd37d60d8e32e35e80fa4",
+    "role": "user",
+    "approved": true
+  },
+  {
+    "id": "1775102622425",
+    "username": "koojadeok",
+    "passwordHash": "aa8e58f059c77c5c8b2c48298be131b607ae0a57796dd37d60d8e32e35e80fa4",
     "role": "user",
     "approved": true
   }

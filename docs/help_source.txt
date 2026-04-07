@@ -1,0 +1,26 @@
+﻿                                            
+ Usage: nlm source [OPTIONS] COMMAND        
+ [ARGS]...                                  
+                                            
+ Manage sources                             
+                                            
++- Options --------------------------------+
+| --help          Show this message and    |
+|                 exit.                    |
++------------------------------------------+
++- Commands -------------------------------+
+| list      List sources in a notebook.    |
+| add       Add a source to a notebook.    |
+| get       Get source details.            |
+| describe  Get AI-generated source        |
+|           summary with keywords.         |
+| content   Get raw source content (no AI  |
+|           processing).                   |
+| rename    Rename a source.               |
+| delete    Delete source(s) permanently.  |
+| stale     List Drive sources that need   |
+|           syncing.                       |
+| sync      Sync Drive sources with latest |
+|           content.                       |
++------------------------------------------+
+

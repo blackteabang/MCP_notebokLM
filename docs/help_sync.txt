@@ -1,0 +1,15 @@
+﻿                                            
+ Usage: nlm sync [OPTIONS] COMMAND          
+ [ARGS]...                                  
+                                            
+ Sync resources (Drive sources)             
+                                            
++- Options --------------------------------+
+| --help          Show this message and    |
+|                 exit.                    |
++------------------------------------------+
++- Commands -------------------------------+
+| sources  Sync Drive sources with latest  |
+|          content.                        |
++------------------------------------------+
+

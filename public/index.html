@@ -13,23 +13,19 @@
 </head>
 <body>
     
-    <!-- AUTHENTICATION SCREEN -->
-    <div id="auth-screen" class="glass-container auth-wrapper">
-        <h1 id="auth-service-name" class="gradient-text">AI Assistant</h1>
-        <p id="auth-subtitle" class="subtitle" style="margin-bottom: 24px;">안전한 데이터 조회를 위해 계정으로 로그인해 주세요.</p>
-
-        <form id="auth-form" class="auth-form">
-            <div id="auth-error" class="hidden auth-error"></div>
-            
-            <input type="text" id="auth-username" placeholder="아이디" required autocomplete="off">
-            <input type="password" id="auth-password" placeholder="비밀번호" required autocomplete="off">
-            
-            <button type="submit" id="login-btn" class="auth-btn">로그인</button>
-            <button type="button" id="register-btn" class="auth-btn secondary">회원가입 및 시작하기</button>
-        </form>
+    <!-- NICKNAME OVERLAY -->
+    <div id="nickname-overlay" class="nickname-wrapper hidden">
+        <div class="glass-container nickname-modal">
+            <h2 class="gradient-text">환영합니다!</h2>
+            <p class="subtitle" style="margin-bottom: 24px;">대화를 시작하기 위해 닉네임을 입력해 주세요.</p>
+            <form id="nickname-form" class="auth-form">
+                <input type="text" id="nickname-input" placeholder="닉네임을 입력하세요..." required autocomplete="off">
+                <button type="submit" class="auth-btn">시작하기</button>
+            </form>
+        </div>
     </div>
 
-    <!-- MAIN CHAT SCREEN (Hidden by default) -->
+    <!-- MAIN CHAT SCREEN -->
     <div id="main-screen" class="glass-container main-wrapper hidden">
         <header class="header">
             <div class="header-content">
@@ -37,8 +33,7 @@
                     <h1 id="main-service-name" class="gradient-text">리맨 지식 정보 AI</h1>
                     <p id="main-subtitle" class="subtitle">규정, 가이드, 사내 문서 등 어떤 내용이든 부담 없이 물어보세요</p>
                 </div>
-                <!-- Logout Button -->
-                <button id="logout-btn" class="logout-btn">로그아웃 <span id="current-user"></span></button>
+                <!-- Logout Button (REMOVED) -->
             </div>
         </header>
 

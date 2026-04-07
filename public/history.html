@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>질문 내역 - NotebookLM Assistant</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .history-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            color: var(--text-main);
+            font-size: 14px;
+        }
+        .history-table th, .history-table td {
+            text-align: left;
+            padding: 14px;
+            border-bottom: 1px solid var(--border-color);
+        }
+        .history-table th {
+            font-weight: 600;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            font-size: 12px;
+            letter-spacing: 0.05em;
+        }
+        .time-col { color: var(--text-muted); font-size: 12px; white-space: nowrap; width: 180px; }
+        .user-col { font-weight: 600; width: 120px; }
+        .service-badge {
+            background: var(--user-msg-bg);
+            color: var(--primary-color);
+            padding: 4px 8px;
+            border-radius: 6px;
+            font-size: 11px;
+            font-weight: 700;
+        }
+        .prompt-col { word-break: break-word; line-height: 1.4; }
+        
+        .history-wrapper {
+            max-width: 1000px;
+            height: 90vh;
+            margin: 20px;
+            padding: 40px;
+            display: flex;
+            flex-direction: column;
+        }
+        .scroll-area {
+            flex: 1;
+            overflow-y: auto;
+            margin-top: 20px;
+            padding-right: 10px;
+        }
+        .scroll-area::-webkit-scrollbar { width: 6px; }
+        .scroll-area::-webkit-scrollbar-thumb { background-color: var(--primary-color); border-radius: 10px; }
+        
+        @media (max-width: 600px) {
+            .history-wrapper { padding: 20px; margin: 10px; height: 95vh; }
+            .time-col { width: 100px; font-size: 10px; }
+            .user-col { width: 80px; }
+            .history-table th, .history-table td { padding: 10px 8px; font-size: 13px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="glass-container history-wrapper">
+        <header class="header" style="border: none; padding: 0;">
+            <div class="header-content">
+                <div>
+                    <h1 class="gradient-text">질문 내역 한눈에 보기</h1>
+                    <p class="subtitle">최근 사용자들이 질문한 실시간 내역입니다.</p>
+                </div>
+                <div style="display: flex; gap: 10px;">
+                    <button id="refresh-btn" class="logout-btn">새로고침</button>
+                    <button onclick="location.href='/'" class="logout-btn">메인으로</button>
+                </div>
+            </div>
+        </header>
+
+        <div class="scroll-area">
+            <table class="history-table">
+                <thead>
+                    <tr>
+                        <th>일시</th>
+                        <th>닉네임</th>
+                        <th>서비스</th>
+                        <th>질문 내용</th>
+                    </tr>
+                </thead>
+                <tbody id="history-list">
+                    <!-- History items will be injected here -->
+                    <tr>
+                        <td colspan="4" style="text-align:center; padding: 40px; color: var(--text-muted);">
+                            질문 내역을 불러오는 중...
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script src="history.js"></script>
+</body>
+</html>
