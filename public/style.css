@@ -25,6 +25,7 @@ body {
   background: linear-gradient(135deg, #3b82f6 0%, #60a5fa 50%, #93c5fd 100%);
   color: var(--text-main);
   height: 100vh;
+  height: 100dvh;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -118,6 +119,7 @@ body {
   width: 100%;
   max-width: 800px;
   height: 90vh;
+  height: 90dvh;
   border-radius: 24px;
   display: flex;
   flex-direction: column;
@@ -155,6 +157,45 @@ body {
 .logout-btn:hover {
   background: var(--error-bg);
   border-color: rgba(239, 68, 68, 0.4);
+}
+
+.icon-btn {
+  background: rgba(255, 255, 255, 0.4);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  color: var(--primary-color);
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+  padding: 0;
+  outline: none;
+}
+
+.icon-btn svg {
+  transition: transform 0.4s ease;
+}
+
+.icon-btn:hover {
+  background: var(--primary-color);
+  color: white;
+  transform: scale(1.1) rotate(5deg);
+  box-shadow: 0 8px 25px rgba(37, 99, 235, 0.3);
+  border-color: transparent;
+}
+
+.icon-btn:hover svg {
+  transform: rotate(-10deg);
+}
+
+.icon-btn:active {
+  transform: scale(0.95);
 }
 
 .gradient-text {
@@ -340,8 +381,8 @@ body {
   }
 
   .main-wrapper {
-    height: 100%;
-    max-height: calc(100vh - 20px);
+    height: calc(100dvh - 20px);
+    max-height: calc(100dvh - 20px);
     border-radius: 16px;
   }
 
@@ -384,6 +425,7 @@ body {
 
   .input-area {
     padding: 12px;
+    padding-bottom: calc(12px + env(safe-area-inset-bottom, 0px));
     border-radius: 0 0 16px 16px; /* Match the main-wrapper corners */
   }
 
